@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=${DATABASE_URL:-sqlite:///app/data/clinic.db}
+      - DATABASE_URL=${CONTAINER_DATABASE_URL:-sqlite:///data/clinic.db}
       - PORT=8000
       - EVOLUTION_API_URL=${EVOLUTION_API_URL:-http://evolution-api:8080}
     volumes:

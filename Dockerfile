@@ -41,7 +41,7 @@ RUN mkdir -p /app/data /app/media
 # Konfigurasi environment runtime
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
-    DATABASE_URL="sqlite:///app/data/clinic.db" \
+    DATABASE_URL="sqlite:///data/clinic.db" \
     PORT=8000
 
 # Salin source code aplikasi
