@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timezone
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -51,7 +51,7 @@ class Booking(SQLModel, table=True):
     booking_time: time
     duration_minutes: int = Field(default=TREATMENT_DURATION_MINUTES)
     status: str = Field(default="pending", index=True)  # pending | confirmed | cancelled
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ClinicHours(SQLModel, table=True):
     """Jam operasional reguler per hari. weekday: 0=Senin ... 6=Minggu."""
@@ -76,7 +76,7 @@ class SpecialSchedule(SQLModel, table=True):
     doctor_start: Optional[time] = None
     doctor_end: Optional[time] = None
     note: Optional[str] = None
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class DoctorSchedule(SQLModel, table=True):
@@ -96,7 +96,7 @@ class ConversationMessage(SQLModel, table=True):
     phone: str = Field(index=True)
     role: str  # "user" | "model"
     text: str
-    created_at: datetime = Field(default_factory=datetime.now, index=True)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), index=True)
 
 
 class Contact(SQLModel, table=True):
@@ -110,7 +110,7 @@ class Contact(SQLModel, table=True):
     name: Optional[str] = None
     ai_enabled: bool = Field(default=True)
     is_returning: bool = Field(default=False)  # pernah treatment? (New vs Returning di prompt)
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # --- mulai dari sini lumayan banyak kalau diketik

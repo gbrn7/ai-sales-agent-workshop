@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -40,7 +40,8 @@ class Memory:
 
         if SESSION_TTL_HOURS > 0:
             last = rows[-1].created_at
-            if datetime.now() - last > timedelta(hours=SESSION_TTL_HOURS):
+            now = datetime.now(timezone.utc) if last.tzinfo else datetime.now()
+            if now - last > timedelta(hours=SESSION_TTL_HOURS):
                 return []  # sesi baru; history lama tetap ada di DB untuk dashboard
 
         return [
