@@ -21,8 +21,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - path: .env
-        required: false
+      - .env
     environment:
       - DATABASE_URL=${DATABASE_URL:-sqlite:///app/data/clinic.db}
       - PORT=8000
@@ -52,8 +51,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - path: .env
-        required: false
+      - .env
     environment:
       - SERVER_URL=http://localhost:8080
       - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:-global-api-key}

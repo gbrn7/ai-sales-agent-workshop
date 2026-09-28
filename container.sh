@@ -51,8 +51,16 @@ print_banner() {
     echo "=================================================================="
 }
 
+ensure_env_file() {
+    if [ ! -f "$SCRIPT_DIR/.env" ]; then
+        echo "⚠️  File .env tidak ditemukan. Menyalin dari .env.example..."
+        cp "$SCRIPT_DIR/.env.example" "$SCRIPT_DIR/.env"
+    fi
+}
+
 ensure_data_dirs() {
     mkdir -p "$SCRIPT_DIR/data" "$SCRIPT_DIR/media"
+    ensure_env_file
 }
 
 # ------------------------------------------------------------------------------
