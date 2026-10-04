@@ -65,7 +65,7 @@ services:
   # Optional service: Start with `--profile postgres`
   # ----------------------------------------------------------------------------
   postgres:
-    image: postgres:16-alpine
+    image: postgres:15
     container_name: glowria-postgres
     profiles:
       - postgres
