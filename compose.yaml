@@ -51,14 +51,9 @@ services:
       - full
       - whatsapp
     ports:
-      - "8083:8080"
+      - "127.0.0.1:8083:8080"
     env_file:
       - .env
-    environment:
-      - SERVER_URL=http://localhost:8083
-      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:-global-api-key}
-      - LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS
-      - DEL_INSTANCE=false
     volumes:
       - evolution_instances:/evolution/instances:z
     restart: unless-stopped
@@ -91,11 +86,23 @@ services:
     networks:
       - sales-agent-network
 
+  redis:
+    container_name: glowria-redis
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - sales-agent-network
+
 volumes:
   evolution_instances:
     name: glowria_evolution_instances
   postgres_data:
     name: glowria_postgres_data
+  redis_data:
+    name: glowria_redis_data
 
 networks:
   sales-agent-network:
