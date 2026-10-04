@@ -66,6 +66,18 @@ Sebelum memulai Modul 00, pastikan Anda memiliki:
 
 ---
 
+## ⚡ Menjalankan Project
+
+Jalankan perintah berikut di terminal untuk menjalankan server aplikasi:
+
+```bash
+uv run uvicorn main:app --reload --port 8000
+```
+
+Server akan aktif dan dapat diakses di `http://localhost:8000`.
+
+---
+
 ## 🚀 Langkah Selanjutnya
 
 Mulai perjalanan belajar Anda dari modul pertama:
