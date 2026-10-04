@@ -44,24 +44,26 @@ services:
   # Service 2: Evolution API (WhatsApp Gateway)
   # Optional service: Start with `--profile full` or `--profile whatsapp`
   # ----------------------------------------------------------------------------
-  # evolution-api:
-  #   image: atendai/evolution-api:v1.8.2
-  #   container_name: glowria-evolution-api
-  #   profiles:
-  #     - full
-  #     - whatsapp
-  #   ports:
-  #     - "8080:8080"
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - SERVER_URL=http://localhost:8080
-  #     - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:-global-api-key}
-  #     - LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS
-  #     - DEL_INSTANCE=false
-  #   volumes:
-  #     - evolution_instances:/evolution/instances:z
-  #   restart: unless-stopped
+  evolution-api:
+    image: evoapicloud/evolution-api:latest
+    container_name: glowria-evolution-api
+    profiles:
+      - full
+      - whatsapp
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - SERVER_URL=http://localhost:8080
+      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:-global-api-key}
+      - LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS
+      - DEL_INSTANCE=false
+    volumes:
+      - evolution_instances:/evolution/instances:z
+    restart: unless-stopped
+    networks:
+      - sales-agent-network
 
   # ----------------------------------------------------------------------------
   # Service 3: PostgreSQL Database (Production DB simulation)
@@ -73,7 +75,7 @@ services:
     profiles:
       - postgres
     ports:
-      - "5433:5432"
+      - "5439:5432"
     environment:
       - POSTGRES_DB=clinic
       - POSTGRES_USER=postgres
@@ -81,15 +83,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data:z
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d clinic" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - sales-agent-network
 
 volumes:
-  # evolution_instances:
-  #   name: glowria_evolution_instances
+  evolution_instances:
+    name: glowria_evolution_instances
   postgres_data:
     name: glowria_postgres_data
 
 networks:
-  evolution-network:
+  sales-agent-network:
     driver: bridge

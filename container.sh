@@ -72,9 +72,10 @@ cmd_help() {
     echo ""
     echo "Perintah yang Tersedia:"
     echo "  build        Build container image (ai-sales-agent:latest)"
-    echo "  up           Jalankan Sales Agent (FastAPI + SQLite, port 8000)"
-    echo "  up:full      Jalankan Full Stack (Sales Agent + Evolution WhatsApp lokal, port 8080)"
+    echo "  up           Jalankan Sales Agent saja (FastAPI, port 8000)"
+    echo "  up:full      Jalankan Sales Agent + Evolution API lokal (port 8080)"
     echo "  up:postgres  Jalankan Sales Agent + PostgreSQL DB lokal (port 5432)"
+    echo "  up:all       Jalankan SEMUA service (Sales Agent + Evolution API + PostgreSQL)"
     echo "  down         Hentikan semua container dan jaringan"
     echo "  logs         Pantau log real-time dari container Sales Agent"
     echo "  cli          Buka simulator chat WhatsApp interaktif di dalam container"
@@ -93,7 +94,7 @@ cmd_build() {
 cmd_up() {
     print_banner
     ensure_data_dirs
-    echo "🚀 Menjalankan Glowria Sales Agent (Default: SQLite)..."
+    echo "🚀 Menjalankan Glowria Sales Agent (default, tanpa Postgres & Evolution)..."
     $COMPOSE_CMD up -d app
     echo ""
     echo "✅ Aplikasi berjalan!"
@@ -105,8 +106,12 @@ cmd_up() {
 cmd_up_full() {
     print_banner
     ensure_data_dirs
-    echo "🚀 Menjalankan Full Stack (Sales Agent + Evolution API)..."
-    $COMPOSE_CMD --profile full up -d
+    echo "🚀 Menjalankan Sales Agent + Evolution API lokal..."
+    if [ "$COMPOSE_CMD" = "podman-compose" ]; then
+        COMPOSE_PROFILES=full $COMPOSE_CMD up -d
+    else
+        $COMPOSE_CMD --profile full up -d
+    fi
     echo ""
     echo "✅ Seluruh service berjalan!"
     echo "   - Sales Agent Dashboard : http://localhost:8000/"
@@ -117,9 +122,31 @@ cmd_up_postgres() {
     print_banner
     ensure_data_dirs
     echo "🚀 Menjalankan Sales Agent + PostgreSQL..."
-    $COMPOSE_CMD --profile postgres up -d
+    if [ "$COMPOSE_CMD" = "podman-compose" ]; then
+        COMPOSE_PROFILES=postgres $COMPOSE_CMD up -d
+    else
+        $COMPOSE_CMD --profile postgres up -d
+    fi
     echo ""
     echo "✅ Service PostgreSQL dan Sales Agent berjalan!"
+    echo "   - Sales Agent Dashboard : http://localhost:8000/"
+    echo "   - PostgreSQL host port  : localhost:5433"
+}
+
+cmd_up_all() {
+    print_banner
+    ensure_data_dirs
+    echo "🚀 Menjalankan SEMUA service (Sales Agent + Evolution API + PostgreSQL)..."
+    if [ "$COMPOSE_CMD" = "podman-compose" ]; then
+        COMPOSE_PROFILES=full,postgres $COMPOSE_CMD up -d
+    else
+        $COMPOSE_CMD --profile full --profile postgres up -d
+    fi
+    echo ""
+    echo "✅ Semua service berjalan!"
+    echo "   - Sales Agent Dashboard : http://localhost:8000/"
+    echo "   - Evolution WhatsApp UI : http://localhost:8080/"
+    echo "   - PostgreSQL host port  : localhost:5439"
 }
 
 cmd_down() {
@@ -166,6 +193,9 @@ case "$ACTION" in
         ;;
     up:postgres)
         cmd_up_postgres
+        ;;
+    up:all)
+        cmd_up_all
         ;;
     down)
         cmd_down
