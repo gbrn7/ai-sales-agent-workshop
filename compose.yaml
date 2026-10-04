@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=${CONTAINER_DATABASE_URL:-sqlite:///data/clinic.db}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///data/clinic.db}
       - PORT=8000
       - EVOLUTION_API_URL=${EVOLUTION_API_URL:-http://evolution-api:8080}
     volumes:
@@ -32,7 +32,7 @@ services:
       - ./media:/app/media:z
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8000/ || exit 1" ]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -42,24 +42,24 @@ services:
   # Service 2: Evolution API (WhatsApp Gateway)
   # Optional service: Start with `--profile full` or `--profile whatsapp`
   # ----------------------------------------------------------------------------
-  evolution-api:
-    image: atendai/evolution-api:v1.8.2
-    container_name: glowria-evolution-api
-    profiles:
-      - full
-      - whatsapp
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env
-    environment:
-      - SERVER_URL=http://localhost:8080
-      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:-global-api-key}
-      - LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS
-      - DEL_INSTANCE=false
-    volumes:
-      - evolution_instances:/evolution/instances:z
-    restart: unless-stopped
+  # evolution-api:
+  #   image: atendai/evolution-api:v1.8.2
+  #   container_name: glowria-evolution-api
+  #   profiles:
+  #     - full
+  #     - whatsapp
+  #   ports:
+  #     - "8080:8080"
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - SERVER_URL=http://localhost:8080
+  #     - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:-global-api-key}
+  #     - LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS
+  #     - DEL_INSTANCE=false
+  #   volumes:
+  #     - evolution_instances:/evolution/instances:z
+  #   restart: unless-stopped
 
   # ----------------------------------------------------------------------------
   # Service 3: PostgreSQL Database (Production DB simulation)
@@ -71,7 +71,7 @@ services:
     profiles:
       - postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_DB=clinic
       - POSTGRES_USER=postgres
@@ -81,7 +81,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  evolution_instances:
-    name: glowria_evolution_instances
+  # evolution_instances:
+  #   name: glowria_evolution_instances
   postgres_data:
     name: glowria_postgres_data
