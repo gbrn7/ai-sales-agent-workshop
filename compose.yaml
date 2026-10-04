@@ -37,6 +37,8 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+    networks:
+      - sales-agent-network
 
   # ----------------------------------------------------------------------------
   # Service 2: Evolution API (WhatsApp Gateway)
@@ -79,9 +81,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data:z
     restart: unless-stopped
+    networks:
+      - sales-agent-network
 
 volumes:
   # evolution_instances:
   #   name: glowria_evolution_instances
   postgres_data:
     name: glowria_postgres_data
+
+networks:
+  evolution-network:
+    driver: bridge
