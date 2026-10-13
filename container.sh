@@ -108,7 +108,7 @@ cmd_up_full() {
     ensure_data_dirs
     echo "🚀 Menjalankan Sales Agent + Evolution API lokal..."
     if [ "$COMPOSE_CMD" = "podman-compose" ]; then
-        COMPOSE_PROFILES=full $COMPOSE_CMD up -d
+        $COMPOSE_CMD up -d app evolution-api redis
     else
         $COMPOSE_CMD --profile full up -d
     fi
@@ -123,14 +123,14 @@ cmd_up_postgres() {
     ensure_data_dirs
     echo "🚀 Menjalankan Sales Agent + PostgreSQL..."
     if [ "$COMPOSE_CMD" = "podman-compose" ]; then
-        COMPOSE_PROFILES=postgres $COMPOSE_CMD up -d
+        $COMPOSE_CMD up -d app postgres
     else
         $COMPOSE_CMD --profile postgres up -d
     fi
     echo ""
     echo "✅ Service PostgreSQL dan Sales Agent berjalan!"
     echo "   - Sales Agent Dashboard : http://localhost:8000/"
-    echo "   - PostgreSQL host port  : localhost:5433"
+    echo "   - PostgreSQL host port  : localhost:5439"
 }
 
 cmd_up_all() {
@@ -138,7 +138,7 @@ cmd_up_all() {
     ensure_data_dirs
     echo "🚀 Menjalankan SEMUA service (Sales Agent + Evolution API + PostgreSQL)..."
     if [ "$COMPOSE_CMD" = "podman-compose" ]; then
-        COMPOSE_PROFILES=full,postgres $COMPOSE_CMD up -d
+        $COMPOSE_CMD up -d app evolution-api postgres redis
     else
         $COMPOSE_CMD --profile full --profile postgres up -d
     fi

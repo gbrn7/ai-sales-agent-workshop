@@ -45,7 +45,7 @@ services:
   # Optional service: Start with `--profile full` or `--profile whatsapp`
   # ----------------------------------------------------------------------------
   evolution-api:
-    image: evoapicloud/evolution-api:latest
+    image: docker.io/evoapicloud/evolution-api:latest
     container_name: glowria-evolution-api
     profiles:
       - full
@@ -65,7 +65,7 @@ services:
   # Optional service: Start with `--profile postgres`
   # ----------------------------------------------------------------------------
   postgres:
-    image: postgres:15
+    image: docker.io/library/postgres:15
     container_name: glowria-postgres
     profiles:
       - postgres
@@ -88,7 +88,7 @@ services:
 
   redis:
     container_name: glowria-redis
-    image: redis:7-alpine
+    image: docker.io/library/redis:7-alpine
     restart: always
     command: redis-server --appendonly yes
     volumes:

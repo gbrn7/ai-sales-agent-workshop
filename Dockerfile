@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 # Stage 1: Builder (Install dependencies via uv)
 # ------------------------------------------------------------------------------
-FROM python:3.12-slim AS builder
+FROM docker.io/library/python:3.12-slim AS builder
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN uv venv /app/.venv && \
 # ------------------------------------------------------------------------------
 # Stage 2: Runner (Minimal runtime image)
 # ------------------------------------------------------------------------------
-FROM python:3.12-slim AS runner
+FROM docker.io/library/python:3.12-slim AS runner
 
 WORKDIR /app
 
